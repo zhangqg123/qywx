@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>消息记录</title>
+	#parse("content/base/back/common/head.vm")
+	<link type="text/css" rel="stylesheet" href="$!{basePath}/content/sign/css/sign.css" />
+	<style type="text/css">
+		.sign{
+		    float: right;
+		    line-height: 44px;
+		    font-size: 14px;
+		    color: #fff;
+		    padding: 0 20px;
+		}
+	</style>
+	
+	<body>
+
+
+
+		<header class="w-header" mon="type=header">		
+			<a class="arrow-wrap" href="javascript:history.back()" mon="content=back">
+				<span class="arrow-left"></span>
+			</a>			
+			<div class="text">消息记录</div>
+		</header>
+
+		<article class="p-list" mon="action=click">
+		
+			<ul id="myTab" class="nav nav-tabs">
+				<li class="active">
+					<a href="#sendMessage" data-toggle="tab">
+						 发送消息
+					</a>
+				</li>
+				<li><a href="#receiveMessage" data-toggle="tab">接收消息</a></li>
+			</ul>
+			
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane fade" id="receiveMessage">
+					<div id="j-goods-container-1">
+						#if($!{pageInfos2})
+							#foreach($!{info} in $!{pageInfos2})
+							<section class="w-goods " mon="action=click&amp;type=item">
+								<a href="#" class="clearfix">
+									<div>
+										<ul>
+											<li class="title">
+												<span class="item-name">
+												<div>
+													<div style="float: left;padding-left: 5px;">$!{info.messageContent}</div>
+		<!--
+													<div style="float: right;padding-right: 5px;">$!dateTool.format("yyyy-MM-dd HH:mm:ss",$!{info.signTime})</div>
+		-->
+												</div>	
+												</span>
+											</li>
+										</ul>
+									</div>
+								</a>		
+							</section>
+							 #end
+						 #end
+					</div>
+					<div class="w-viewmore clearfix" mon="action=click">
+						<a href="javascript:;" id="j-gotop" class="op-btn gotop" mon="type=gotop">回到顶部</a>
+					</div>
+				</div>
+			
+				<div class="tab-pane fade in active" id="sendMessage">
+			
+					<div id="j-goods-container">
+						#if($!{pageInfos})
+							#foreach($!{info} in $!{pageInfos})
+							<section class="w-goods " mon="action=click&amp;type=item">
+								<a href="#" class="clearfix">
+									<div>
+										<ul>
+											<li class="title">
+												<span class="item-name">
+												<div>
+													<div style="float: left;padding-left: 5px;">$!{info.messageContent}</div>
+		<!--
+													<div style="float: right;padding-right: 5px;">$!dateTool.format("yyyy-MM-dd HH:mm:ss",$!{info.signTime})</div>
+		-->
+												</div>	
+												</span>
+											</li>
+										</ul>
+									</div>
+								</a>		
+							</section>
+							 #end
+						 #end
+					</div>
+					<div class="w-viewmore clearfix" mon="action=click">
+						<a href="javascript:;" id="j-gotop" class="op-btn gotop" mon="type=gotop">回到顶部</a>
+					</div>
+			
+				</div>
+			</div>	
+		</article>
+
+	</body>
+</html>

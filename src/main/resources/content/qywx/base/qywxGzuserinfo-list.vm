@@ -1,0 +1,260 @@
+#parse("content/base/back/common/macro.vm")
+<!DOCTYPE html>
+<html lang="en">
+#parse("content/base/back/common/head.vm")
+<link href="$!{basePath}/plug-in-ui/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" type="text/css" />
+<body style='overflow:scroll;overflow-x:hidden'>
+	<div class="container bs-docs-container" style="width:100%;">
+		<div class="row">
+			<form role="form" class="form-inline" action="$!{basePath}/qywx/qywxGzuserinfo.do?list" method="post"  id="formSubmit">
+				<div  class="col-md-10" style="width:100%">
+								<div class="panel panel-default">
+								  <div class="panel-heading">用户列表</div>
+								  <div class="panel-body">
+								  		<div class="search">
+											 <div class="form-group col-sm-3">
+											    <label for="userid" class="control-label col-sm-3 line34">账号</label>
+											     <div class="col-sm-8">
+											    <input type="text" name="userid" id="userid" value="$!{qywxGzuserinfo.userid}" class="form-control">
+											  	</div>
+											 </div>
+											 <div class="form-group col-sm-3">
+											    <label for="name" class="control-label col-sm-3 line34">姓名</label>
+											     <div class="col-sm-8">
+											    <input type="text" name="name" id="name" value="$!{qywxGzuserinfo.name}" class="form-control">
+											  	</div>
+											 </div>
+											 
+											 <div class="form-group col-sm-3">
+											    <label for="weixinid" class="control-label col-sm-3 line34">部门</label>
+											     <div class="col-sm-8">
+<!--
+												    <input type="text" name="department" id="department" value="$!{qywxGzuserinfo.department}" class="form-control">
+-->
+											    	<input type="text" readonly="readonly" value="" id="parentGroupId" readonly class="form-control" onclick="showMenu();"/>
+												    <input type="hidden" value="$!{qywxGzuserinfo.department}" name="department" id="pId" class="form-control" />
+											  	</div>
+											 </div>
+											  <button type="submit" class="btn btn-primary">搜  索</button>
+											  <div class="clearfix"></div>
+								  		</div>
+								  		<div id="legend">
+								          <legend  class="le">
+												<button type="button" class="btn btn-primary" onclick="doUrl('$!{basePath}/qywx/qywxGzuserinfo.do?toAdd&department=$!{qywxGzuserinfo.department}')" >新增</button>
+												#if($!{departId}=="all")
+													<button type="button" class="btn btn-primary" onclick="doSynch('$!{basePath}/qywx/qywxGzuserinfo.do?doSync')" >同步粉丝</button>
+												#end
+										  </legend> 
+								        </div>
+								        <table class="table table-striped">
+									        <thead>
+													<th>账号</th>
+													<th>姓名</th>
+													<th>部门</th>
+													<th>职位</th>
+													<th>电话</th>
+<!--
+													<th>省份</th>
+													<th>性别</th>
+													<th>邮箱</th>
+													<th>微信号</th>
+-->
+													<th>头像url</th>
+													<th>关注状态</th>
+<!--
+													<th>关注时间</th>
+													<th>创建日期</th>
+-->
+						                			<th>操作</th>
+									        </thead>
+									        <tobody>
+									    	  #if($!{pageInfos})
+								                #foreach($!{info} in $!{pageInfos})
+									            	<tr>			
+																	<td>$!{info.userid}</td>
+																	<td>$!{info.name}</td>
+																	<td>$!{info.department}</td>
+																	<td>$!{info.position}</td>
+																	<td>$!{info.mobile}</td>
+<!--
+																	<td>$!{info.province}</td>
+																	<td>
+																	#if($!info.gender=="1")
+																	男
+																	#elseif($!info.gender=="2")
+																	女
+																	#else
+																	未知
+																	#end
+																	</td>
+																	<td>$!{info.email}</td>
+																	<td>$!{info.weixinid}</td>
+-->
+																	<td><img style="width:30px;height:30px" src="$!{info.avatar}"></td>
+																	<td>
+																	#if($!info.subscribeStatus=='1')
+																	已关注
+																	#elseif($!info.subscribeStatus=='2')
+																	已冻结
+																	#else($!info.subscribeStatus=='4')
+																	未关注
+																	#end
+																	</td>
+<!--
+																	<td>$!dateTool.format("yyyy-MM-dd HH:mm:ss",$!{info.subscribeTime})</td>
+																	<td>$!dateTool.format("yyyy-MM-dd HH:mm:ss",$!{info.createDate})</td>
+-->
+										                <td class="last">
+							                			<a href="javascript:doUrl('$!{basePath}/qywx/qywxGzuserinfo.do?toEdit&id=$!{info.id}&sdep=$!{qywxGzuserinfo.department}')" >编辑</a>
+							                			<a href="javascript:delData('$!{basePath}/qywx/qywxGzuserinfo.do?doDelete&id=$!{info.id}')">删除</a>
+						                				</td>
+									           		</tr>
+									             #end
+									    	 #end
+									         </tobody>
+									    </table>
+										<div class="text-right">
+											<!--公用翻页代码-->
+							                #set($attr='formSubmit')
+							            	#showPageList($pageInfos $attr)
+							                <!--END公用翻页代码-->
+										</div>
+								  </div>	
+								</div>
+				</div>  
+				</form>
+		</div>
+		<div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+		<ul id="treeDemo" class="ztree" style="margin-top:0; width:160px;"></ul>
+	</div>
+</body>
+<script type="text/javascript">
+function doSynch(){
+		if(confirm("你确定要同步吗？")){
+			var url = "$!{basePath}/qywx/qywxGzuserinfo.do?doSync";
+			jQuery.ajax({
+				url:url,
+				cache:false,
+				dataType:"json",
+				success: function(data){
+					alert(data.msg);
+					location.reload();
+				},
+				error: function(data){
+					alert(data.msg);
+		        }
+			});
+		}
+	}
+</script>	
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.core.js"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.excheck.js"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.exedit.js"></script>
+
+<script >
+var IDMark_A = "_a";
+
+function showMenu() {
+var cityObj = $("#parentGroupId");
+var cityOffset = $("#parentGroupId").offset();
+	if($("#menuContent").is(':hidden')){
+     $("#menuContent").css({left:cityOffset.left + "px", top:cityOffset.top + cityObj.outerHeight() + "px"}).slideDown("fast");
+	}else{
+	  $("#menuContent").fadeOut("fast");
+	}
+    $("body").bind("mousedown", onBodyDown);
+}
+function hideMenu() {
+	$("#menuContent").fadeOut("fast");
+	$("body").unbind("mousedown", onBodyDown);
+}
+function onBodyDown(event) {
+	if (!(event.target.id == "parentGroupId" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+		hideMenu();
+	}
+}
+var setting = {
+			check: {
+				enable: true,
+				chkStyle: "radio",
+				radioType: "all"
+			},
+//				check: {
+//					enable: true,
+//					radioType: "all",
+//					chkboxType:{"Y" : "undefined", "N" : "" }
+//				},
+			view: {
+				addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom,
+				dblClickExpand: false
+			},
+			data: {
+				simpleData: {
+					enable: true,
+					idKey: "id",
+					pIdKey: "pId",
+					rootPId: null
+				}
+			},
+			callback: {
+				onClick: onClick,
+				onCheck: onCheck
+			}
+		};
+function onClick(e, treeId, treeNode) {
+   var tree = zTree.getZTreeObj("treeDemo");
+	tree.checkNode(treeNode, !treeNode.checked, null, true);
+	return false;
+}
+function onCheck(e, treeId, treeNode) {
+	var tree = zTree.getZTreeObj("treeDemo"),
+	nodes = tree.getCheckedNodes(true),
+	v = "",vid = "";
+	for (var i=0, l=nodes.length; i<l; i++) {
+		v += nodes[i].name + ",";
+		vid += nodes[i].id + ",";
+	}
+	if (v.length > 0 ) v = v.substring(0, v.length-1);
+	if (vid.length > 0 ) vid = vid.substring(0, vid.length-1);
+	$("#parentGroupId").val(v);
+	$("#pId").val(vid);
+}
+function addHoverDom(treeId, treeNode) {
+	if (treeNode.parentNode && treeNode.parentNode.id!=1) return;
+	var aObj = $("#" + treeNode.tId + IDMark_A);
+		if ($("#diyBtn_"+treeNode.id).length>0) return;
+		//var editStr = "<span id='diyBtn_" +treeNode.id+ "'>编码:"+treeNode.id+"</span>";
+		//aObj.after(editStr);
+}
+function removeHoverDom(treeId, treeNode) {
+		$("#diyBtn_"+treeNode.id).unbind().remove();
+		$("#diyBtn_space_" +treeNode.id).unbind().remove();
+}
+var zNodes;
+$(document).ready(function(){
+
+	jQuery.ajax({  
+	        async : false,  
+	        cache:false,  
+	        type: 'POST',  
+	        dataType : "json",  
+	        url: "groupMsg.do?getAuthTree&departId=$!{departId}",//请求的action路径  
+	        error: function () {//请求失败处理函数  
+	            alert('请求失败');  
+	        },  
+	        success:function(data){ //请求成功后处理函数。    
+	            zNodes = data.obj;   //把后台封装好的简单Json格式赋给zNodes  
+	        }  
+	    });  
+	zTree.init($("#treeDemo"), setting, zNodes);
+
+	var node = zTree.getZTreeObj("treeDemo").getNodeByParam("id", $("#pId").val());
+	$("#parentGroupId").val(node.name);
+	var treeObj = zTree.getZTreeObj("treeDemo");
+	treeObj.selectNode(node);
+	treeObj.checkNode(node, true, null, false);
+	
+});
+</script>
+</html>

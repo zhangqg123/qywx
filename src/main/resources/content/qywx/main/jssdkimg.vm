@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>jssdk图片</title>
+#parse("content/base/back/common/head.vm")
+
+<style type="text/css">
+.btn {
+  width: 100%;
+  height:100px;
+  border: 0;
+  outline: 0;
+  -webkit-appearance: none;
+  margin-bottom: 15px;
+    font-size: 18px;
+  text-align: center;
+  }
+  
+
+  
+.btn_primary {
+  background-color: #04be02;
+}
+
+</style>
+
+</head>
+<body>
+	<h1>Welcome To SpringMVC!</h1>
+
+     <h3 id="menu-image">图像接口</h3>
+      <span class="desc">拍照或从手机相册中选图接口</span>
+      <button class="btn btn_primary" id="chooseImage">chooseImage</button>
+      <span class="desc">预览图片接口</span>
+      <button class="btn btn_primary" id="previewImage">previewImage</button>
+      <span class="desc">上传图片接口</span>
+      <button class="btn btn_primary" id="uploadImage">uploadImage</button>
+      <span class="desc">下载图片接口</span>
+      <button class="btn btn_primary" id="downloadImage">downloadImage</button>
+			<div id="js_content" class="content"><img src="http://www.chinahunchunnongye.com/upload/img/lykx/1GiHu6pu1510120446389.png"/></div>
+
+</body>	
+</html>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script type="text/javascript" src="$!{basePath}/content/qywx/plug-in/groupMsg/js/oper.js"></script>
+<script>
+wx.config({
+    debug: true,
+    appId: '$!{appId}',
+    timestamp:'$!{timestamp}',
+    nonceStr: '$!{nonceStr}',
+    signature: '$!{signature}',
+    jsApiList: [
+       'chooseImage',
+       'previewImage',
+       'uploadImage',
+       'downloadImage'
+    ]
+});
+
+</script>

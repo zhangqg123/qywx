@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+		<table class="table table-striped" style="font-size:16px;">
+			        <thead>
+			                <th></th>
+							<th>姓名</th>
+					<!--		<th>部门</th>	-->
+							<th>职位</th>
+			        </thead>
+			        <tobody>
+			    	  #if($!{pageInfos})
+		                #foreach($!{info} in $!{pageInfos})
+			            	<tr>		  <th width="30px" align="center">
+                                          <input name="userchecks" type="checkbox" value="$!{info.userid},$!{info.name}"  onclick="fun();"/>
+                                          </th>
+											<td>$!{info.name}</td>
+									<!--		<td>$!{info.department}</td>	-->
+											<td>$!{info.position}</td>
+			           		</tr>
+			             #end
+			    	 #end
+			    </tobody>
+		    </table>
+			<div class="text-right">
+			<!--公用翻页代码-->
+				<input type="hidden" name="page" id="page" value="1"/>
+				<ul class="pagination">
+		        	<input type="hidden" value="1" name="pageNo" id="pageNo" />
+		        	<li><span>共$!{pageInfos.totalPage}页,$!{pageInfos.totalItem}项</span></li>
+		            <li>
+			            #if($!{pageInfos.index}==1)
+			            	<a href="#" disabled >&laquo;</a>						            
+			            #else
+			            	<a href="javascript:jQuery('#pageNo').val('$!{pageInfos.PreviousPage}');selectUsers('$!{pid}','$!{pageInfos.PreviousPage}','$!{pageInfos.pageSize}');" >&laquo;</a>
+			            #end
+		            </li>
+		            <li><span>$!{pageInfos.index}</span></li>
+		            <li>
+			            #if($!{pageInfos.index}==$!{pageInfos.totalPage})
+			            	<a href="#" disabled >&laquo;</a>						            
+			            #else
+				            <a href = "javascript:jQuery('#pageNo').val('$!{pageInfos.nextPage}');selectUsers('$!{pid}','$!{pageInfos.nextPage}','$!{pageInfos.pageSize}');">&raquo;</a>
+			            #end
+		            </li>
+		        </ul>
+	        <!--END公用翻页代码-->
+			</div>
+			 <input type="hidden" id="framid" value=""/>
+			 <input type="hidden" id="framname" value=""/>
+<!--			 
+			<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/jquery-1.9.1.js"></script>
+			<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/jquery-1.9.1.min.js"></script>
+-->
+			<script type="text/javascript">
+				function fun(){
+					var obj=$("input:checkbox[name='userchecks']:checked");
+					check_val = [];
+					check_name=[];
+					for(k in obj){
+						if(obj[k].checked){
+						    var value = obj[k].value;
+						    var str = value.split(",")
+							check_val.push(str[0]);
+							check_name.push(str[1]);
+						}
+					}
+					$('#framid').val( check_val);
+					$('#framname').val( check_name);
+				}
+		</script>

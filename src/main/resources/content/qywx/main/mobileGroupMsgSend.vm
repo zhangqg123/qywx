@@ -1,0 +1,539 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+<title>群发消息</title>
+#parse("content/base/back/common/head.vm")
+
+<link href="$!{basePath}/plug-in-ui/css/treetable/default/treeTable.css" rel="stylesheet" type="text/css" />
+<link href="$!{basePath}/content/qywx/plug-in/groupMsg/css/mobile.css" type="text/css" rel="stylesheet"/>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.core.js$!{version}"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.excheck.js$!{version}"></script>
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/jquery.ztree.exedit.js$!{version}"></script
+<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/zTree/bootstrap.min.js$!{version}"></script>
+<style type="text/css">
+	*{
+	    font-size: 16px;
+	}
+	.form-control{
+		font-size:16px
+	}
+      /* 内部样式 */
+	.ztree * {
+	    font-size: 16px;
+	}
+	.ztree {
+		height: 260px;
+		width: 280px !important;
+	}
+
+</style>
+</head>
+<body> 
+<input type="hidden" id="msgType"/>
+
+<!--
+<ul id="myTab" class="nav nav-tabs">
+	<li class="active">
+		<a href="#home" data-toggle="tab">
+			 发送消息
+		</a>
+	</li>
+	<li><a href="#ios" data-toggle="tab">iOS</a></li>
+</ul>
+-->
+
+<!--弹出层-->
+<div class="zz"></div>
+<div class="cc">
+<div class="c_head"><i>转发微博</i><span></span></div>
+<div class="c_main">
+<div class="cbot">
+<!-- 弹出页面 -->
+<iframe src="" id="groupmessage" width="100%" height="400" frameborder="0" scrolling="yes">
+</iframe>
+</div>
+</div>
+<div class="tj">
+	<input class="zleft c_btn" type="button" value="确定"/>
+	<input class="zright" type="button" value="取消"/></div>
+</div>
+<!--弹出层 end-->
+
+<!--主界面 start-->
+<div class="container bs-docs-container" style="width:100%;">
+	<div class="row">
+		<div class="panel panel-default">
+<!--			<div class="panel-heading">发送消息</div> -->
+			<div class="panel-body">
+		<form class="form-horizontal" role="form">
+
+			<div class="form-group mno">
+				<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">企业应用</label>
+				<div class="col-xs-9 col-sm-4" id="toAgent" style="padding-top:7px;">
+					<input type="text" value="$!{qywxAgent.agentName}" id="agentId" readonly class="form-control"/>
+				</div>
+			</div>
+
+			<div class="form-group mno">
+				<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">部门名称</label>
+				<div class="col-xs-9 col-sm-4" id="departmentid" style="padding-top:7px;">
+					<input type="text" value="$!{qywxGroup.name}" id="groupId" readonly class="form-control"/>
+		        	<input type="hidden" value="$!{qywxGroup.id}" name="parentid" id="pId" />
+		        </div>
+			</div>
+			<div class="form-group mno">
+				<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">发送人</label>
+				<div class="col-xs-9 col-sm-4" id="fromUser" style="padding-top:7px;">
+					<input type="text" id="fromUserName" value="$!{fromUserName}" readonly class="form-control" />
+				</div>
+			</div>
+			<div class="form-group mno">
+				<label for="inputEmail3" class="col-xs-3 col-sm-2 control-label" style="text-align:left;">接收人</label>
+				<div class="col-xs-9 col-sm-4" id="memberid" style="padding-top:7px;">
+					<input type="text" id="userid" value="请选择接收人" readonly class="form-control" />
+				</div>
+			</div>
+			<!--c_cont-->
+			<div class="c_cont_mobile">
+				<div class="c_tree_mobile">
+				<ul>
+				
+					<li>
+						<a href="javascript:void(0);">
+							<i id="text"></i>
+						</a>
+					</li>
+					
+				 	<li>
+						<a href="javascript:void(0);">
+							<i id="image"></i>
+						</a>
+					</li>
+				<!--	
+					<li>
+						<a href="javascript:void(0);">
+							<i id="video"></i>
+						</a>
+					</li>
+					
+					<li>
+						<a href="javascript:void(0);">
+							<i id="voice"></i>
+						</a>
+					</li>
+				
+					<li>
+						<a href="javascript:void(0);">
+							<i id="news"></i>
+						</a>
+					</li>
+				-->	
+				</ul>
+				</div>
+				<div class="c_bj_mobile">
+					<textarea class="wz_mobile" id="msgId" placeholder="请输入内容" name=""></textarea>
+				</div>
+				<div class="ts_mobile">还可以输入<i>600</i>字</div>
+			</div>
+			<!--c_cont end-->
+			<div class="c_footer">
+			<input type="button" id="sendMessage" value="群发" class="c_btn"/>
+			<!--  -->
+			</div>
+
+		</form>
+			</div>
+		</div>
+	</div>
+</div>
+<!--主界面 end-->
+
+<!--
+</div>
+</div>
+-->
+
+<div id="menuContent" class="menuContent" style="display:none;position: absolute;">
+	<ul id="treeDemo" class="ztree" style="margin-top:0; width:100%;"></ul>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="privilegeTreeModal" tabindex="-1" role="dialog"
+	aria-labelledby="privilegeTreeModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content" style="width: 100%;">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="privilegeTreeModalLabel">用户列表</h4>
+			</div>
+			<div class="modal-body">
+<!--				<iframe name="selectUsers" id="selectUsers" width="100%" height="50%" frameborder="0" scrolling="auto" src=""></iframe>
+-->
+				<div id="users"></div> 
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" id="dialogFormClose" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-default" onclick="CheckAll();" data-dismiss="modal">确定</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<input type="hidden" id="temp"/>
+<input type="hidden" id="gzuserinfoid"/>
+<input type="hidden" id="media_id"/>
+<input type="hidden" name="accountId" id="accountId" value="$!{accountId}"/>
+<input type="hidden" name="listGroupToTree" id="listGroupToTree" value="$!{listGroupToTree}"/>
+</body>
+		<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/Validform_v5.3.2.js"></script> 
+		<script type="text/javascript" src="$!{basePath}/plug-in-ui/js/forminit.p3.js"></script>
+		<script type="text/javascript">
+		
+	    
+		$(function(){
+	        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	            // 获取已激活的标签页的名称
+	            var activeTab = $(e.target).text();
+	            alert("active:"+activeTab );
+	        });
+		
+			$(".c_tree_mobile i").each(function(i, element) {
+				var _top=i*-60,_top2=i*-60-30;
+				if(i==0){
+					$(this).css({"background-position":"0px "+_top2+"px"});
+				}else{
+					$(this).css({"background-position":"0px "+_top+"px"});
+					$(this).hover(function(){
+							$(this).css({"background-position":"0px "+_top2+"px"});
+						},function(){
+				 			$(this).css({"background-position":"0px "+_top+"px"});
+					});
+				}
+			});
+			
+		    //弹出框
+			var _move=false;//移动标记
+			var _x,_y;//鼠标离控件左上角的相对位置
+			//标记点击的那个按钮
+/*
+			var checkedPic ="text";
+			$(".c_tree_mobile i").click(function(){
+				var id = $(this).attr("id");
+				checkedPic= $("#msgType").val(id);//定义一个变量，把id复制给msgType
+				var message = "";
+				var srcUrl ="";
+				if(id=="text"){
+				    var htmlContent = "<textarea class=\"wz\" placeholder=\"请输入内容\" name=\"param\"></textarea>";
+				    $(".c_bj_mobile").html(htmlContent);
+					$(".wz_mobile").focus();
+					$("#groupmessage").attr("src","");
+				}else if(id=="image"){
+					message = "选择图片";
+					srcUrl+="&symbol=simple&type=image";
+					$("#groupmessage").attr("src","");
+				}else if(id=="video"){
+					message = "选择视频";
+					srcUrl+="&symbol=simple&type=video";
+					$("#groupmessage").attr("src",srcUrl);
+				}else if(id=="voice"){
+					message = "选择语音";
+					srcUrl+="&symbol=simple&type=voice";
+					$("#groupmessage").attr("src",srcUrl);
+				}else if(id=="news"){
+					message = "选择素材";
+					srcUrl="mobileGroupMsg.do?getAllUploadNewsTemplate";
+					srcUrl+="&symbol=page";
+					$("#groupmessage").attr("src",srcUrl);
+				}
+				//设置弹出框标题
+				if(id!="text"){
+					$(".c_head").find("i").html(message);
+					$('.cc').fadeIn('slow');
+					$('.zz').css("display","block");
+				}
+			});
+*/
+	
+		 //群发，群发所有用户，群发部门，群发用户
+		$("#sendMessage").click(function(){
+//		      var toAgent = $("#toAgent option:selected").val();
+//		      var toAgent = 3;
+			  var toparty = $("#pId").val();//群发类型为组织机构id
+			  var msgtype =$("#msgType").val();//群发类型
+			  if(msgtype==""){
+				msgtype="text";
+			  }
+//			  var fromUserName=$("#fromUserName").val()
+			  var media_id =$("#media_id").val();//群发类型
+//			  alert("media id:"+media_id);
+			  var touserId=$("#gzuserinfoid").val();//群发类型为用户
+			  var toModel = $("#toModel option:selected").val();//群发对象为全部成员发送@all
+			  var param = $("#param").val();//消息内容
+			  var templateId=$('#temp').val();//当群发图文素材时候需要 templateId
+			  var msgId=$('#msgId').val();//文本域内容
+			  var url ="mobileGroupMsg.do?toMobileGroupTextSend";
+			  if(msgtype == "text"){
+				param=$("#fromUserName").val()+":"+$(".wz_mobile").val();
+			  }
+		      if(param=="" && msgtype == "text"){
+				alert("请输入群发内容！");
+				}
+				if(msgId=="" && msgtype == "text"){
+				alert("请输入群发内容！");
+				}
+				else{
+				if (confirm("你确定群发消息吗？"))  {  			
+					jQuery.ajax({ 
+					            url:url,
+								type:"POST",
+								dataType:"JSON",
+								data:{"msgtype":msgtype,"media_id":media_id,"param":param,"toparty":toparty,"templateId":templateId,"touserId":touserId,"toModel":toModel},
+								success:function(data,status){
+					            if (data.obj=='sucess') {
+					                alert("发送成功！");
+					               }else{
+					               alert("发送失败！");
+					               }
+								}
+						
+							});		
+					}	
+				}
+			});
+			
+		$('.cc span,.zright').click(function(){
+			$('.cc').hide('fast');
+			$('.zz').css("display","none");
+		})	
+		
+		//图文弹出框
+		$(".zleft").click(function(){
+			var iFrame= document.getElementById('groupmessage').contentWindow;
+			var templateId=iFrame.getcheckedNews();//获取到id
+			$('#temp').val(templateId)//把templateId赋值给定义的一个隐藏属性
+			//关闭弹出框
+			$('.cc').hide('fast');
+			$('.zz').css("display","none");
+	        var msgtype =$("#msgType").val()
+			if(msgtype=='news'){
+			jQuery.ajax({
+					url:"mobileGroupMsg.do?toGroupNewsSend",
+					data:{"templateId":templateId},
+					dataType:"JSON",
+					method:"POST",
+					success:function(data){
+					 console.log(data);
+					    if(data.success){
+					        var list = data.obj;
+					        if(list.length>0){
+							    var htmlContent = "<div class=\"media_preview_area pp\" style=\"width:320px;\">"+
+				    							  "<div class=\"appmsg multi editing\"><div id=\"js_appmsg_preview\" class=\"appmsg_content\">";
+								for(var i=0;i<list.length;i++){
+									if(i==0){
+										htmlContent += "<div id=\"appmsgItem1\" class=\"js_appmsg_item has_thumb\" data-id=\"1\" data-fileid=\"200159570\">"+
+				          							   "<div class=\"appmsg_info\"> <h3>"+list[i].title+"</h3><em class=\"appmsg_date\"></em></div><div class=\"cover_appmsg_item\">"+
+				                                        "<h4 class=\"appmsg_title\"> <a target=\"_blank\" onclick=\"return false;\" href=\"javascript:void(0);\">"+list[i].description+"</a> </h4>"+
+				                                        "<div class=\"appmsg_thumb_wrp\"> <img class=\"js_appmsg_thumb appmsg_thumb\" src=\"" + '$!{basePath}' +'/'+ list[i].imagePath+"\"></div></div></div>";
+									}else{
+										htmlContent += "<div id=\"appmsgItem2\" class=\"appmsg_item js_appmsg_item has_thumb\" data-id=\"2\" data-fileid=\"200159577\"> <img class=\"js_appmsg_thumb appmsg_thumb\" src=\"" + '$!{basePath}' +'/' +list[i].imagePath+"\">"+
+				          							   "<h4 class=\"appmsg_title\"> <a target=\"_blank\" href=\"javascript:void(0);\">"+list[i].title+"</a></h4></div>";
+									}
+								}
+								htmlContent += "</div></div></div>";
+								$(".c_bj_mobile").html(htmlContent);
+							}
+						}
+					}
+			  });
+			}
+		});
+	});
+	
+	jQuery(function($){ 
+		$('#userid').click(function(){
+
+			var pid=$("#pId").val();
+			if(pid==""){
+				alert("请选择部门!");
+			}else{
+				var url="mobileGroupMsg.do?mobileUserTempletNew";
+			 	$('#privilegeTreeModalLabel').html("用户名称");
+				jQuery.ajax({
+					url:url,
+					cache: false,
+					data:{"pid":pid},
+					dataType:"JSON",
+					method:"POST",
+					success:function(data){
+				    	$("#users").html(data.obj);
+			        }
+				});
+				$('#privilegeTreeModal').modal({show:true,backdrop:false});
+			}
+		})	
+	});		
+	
+	
+		//部门树的加载
+			//把用户列表页面用弹出框的形式展现出来,在model里面添加添加iframe
+			function userlist(title){
+				var pid=$("#pId").val();
+				var xxObj = document.getElementById('selectUsers');
+				xxObj.src="mobileGroupMsg.do?mobileUserList&pid="+pid;
+			    $('#privilegeTreeModal').modal({show:true,backdrop:false});
+			}
+			//显示群发用户
+			function CheckAll(){
+			  var topWinid= document.getElementById('framid');
+			  var topWinname= document.getElementById('framname');
+			  var userId=topWinid.value;
+			  var userName=topWinname.value
+			  $('#userid').val("");
+			  $('#userid').val(userName);
+			  $('#gzuserinfoid').val(userId);
+
+			}
+			//群发隐藏
+			function modellist(){
+			 var toModel = $("#toModel option:selected").val();//群发对象为全部成员发送@all
+			 if(toModel=="1"){
+			     $("#departmentid,#memberid").show();
+			     }
+			 if(toModel=="2"){
+			    $("#departmentid,#memberid").hide();
+			  }
+			}
+</script>
+
+<script src="http://res.wx.qq.com/open/js/jweixin-1.1.0.js"></script>
+<script>
+wx.config({
+    debug: false,
+    appId: '$!{appId}',
+    timestamp:'$!{timestamp}',
+    nonceStr: '$!{nonceStr}',
+    signature: '$!{signature}',
+    jsApiList: [
+       'chooseImage',
+       'previewImage',
+       'uploadImage',
+       'downloadImage'
+    ]
+});
+wx.ready(function () {
+	 
+	// 5 图片接口
+	  // 5.1 拍照、本地选图
+	  var images = {
+	    localId: [],
+	    serverId: []
+	  };
+	  document.querySelector('#image').onclick = function () {
+	    wx.chooseImage({
+	      success: function (res) {
+	        images.localId = res.localIds;
+//	        alert('已选择 ' + res.localIds.length + ' 张图片');
+			var htmlContent = "<div class=\"media_preview_area pp\" style=\"width:320px;\">"+
+							  "<div class=\"appmsg multi editing\"><div id=\"js_appmsg_preview\" class=\"appmsg_content\">";
+			htmlContent += "<img id=\"faceImg\" class=\"js_appmsg_thumb appmsg_thumb\" src=\""+res.localIds[0]+"\">";
+			htmlContent += "</div></div></div>";
+			$(".c_bj_mobile").html(htmlContent);
+	        
+		    if (images.localId.length == 0) {
+		      alert('请先使用 chooseImage 接口选择图片');
+		      return;
+		    }
+		    var i = 0, length = images.localId.length;
+		    images.serverId = [];
+		    function upload() {
+		      wx.uploadImage({
+		        localId: images.localId[i],
+		        success: function (res) {
+			        i++;
+			        //alert('已上传：' + i + '/' + length);
+			        images.serverId.push(res.serverId);
+			        
+			    	$('#media_id').val(res.serverId);
+					$("#msgType").val("image");		          
+			
+			        if (i < length) {
+			            upload();
+			        }
+		        },
+		        fail: function (res) {
+		          alert(JSON.stringify(res));
+		        }
+		      });
+		    }
+		    upload();
+	      }
+	    });
+	  };
+
+	  // 5.2 图片预览
+	  document.querySelector('#previewImage').onclick = function () {
+	    wx.previewImage({
+	      current: 'http://img5.douban.com/view/photo/photo/public/p1353993776.jpg',
+	      urls: [
+	        'http://img3.douban.com/view/photo/photo/public/p2152117150.jpg',
+	        'http://img5.douban.com/view/photo/photo/public/p1353993776.jpg',
+	        'http://img3.douban.com/view/photo/photo/public/p2152134700.jpg'
+	      ]
+	    });
+	  };
+
+	  // 5.3 上传图片
+	  document.querySelector('#uploadImage').onclick = function () {
+	    if (images.localId.length == 0) {
+	      alert('请先使用 chooseImage 接口选择图片');
+	      return;
+	    }
+	    var i = 0, length = images.localId.length;
+	    images.serverId = [];
+	    function upload() {
+	      wx.uploadImage({
+	        localId: images.localId[i],
+	        success: function (res) {
+	          i++;
+	          //alert('已上传：' + i + '/' + length);
+	          images.serverId.push(res.serverId);
+	          if (i < length) {
+	            upload();
+	          }
+	        },
+	        fail: function (res) {
+	          alert(JSON.stringify(res));
+	        }
+	      });
+	    }
+	    upload();
+	  };
+
+	  // 5.4 下载图片
+	  document.querySelector('#downloadImage').onclick = function () {
+	    if (images.serverId.length === 0) {
+	      alert('请先使用 uploadImage 上传图片');
+	      return;
+	    }
+	    var i = 0, length = images.serverId.length;
+	    images.localId = [];
+	    function download() {
+	      wx.downloadImage({
+	        serverId: images.serverId[i],
+	        success: function (res) {
+	          i++;
+	          alert('已下载：' + i + '/' + length);
+	          images.localId.push(res.localId);
+	          if (i < length) {
+	            download();
+	          }
+	        }
+	      });
+	    }
+	    download();
+	  };
+	  
+  });
+
+</script>
+
+</html>
